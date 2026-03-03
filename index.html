@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>枋寮回憶：無限星空 5.5</title>
+    <title>枋寮回憶：無限星空 5.6</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500&family=Noto+Serif+TC:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
     
     <style>
         :root { 
-            /* 調整後的 Apple 風暗色漸變配方 */
-            --bg-1: #0a0c1a; --bg-2: #1a0a15; --bg-3: #0a1a15; 
-            --card-w: clamp(170px, 42vw, 240px);
+            /* 回歸：對比更明顯的四色暗調配方 */
+            --bg-1: #080a15; /* 深邃藍 */
+            --bg-2: #180812; /* 暗紫紅 */
+            --bg-3: #081810; /* 墨綠 */
+            --bg-4: #151208; /* 暗琥珀 */
+            --card-w: clamp(175px, 42vw, 240px);
             --card-radius: 22px; 
         }
 
@@ -22,15 +25,16 @@
             -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
         }
 
-        /* 特效回歸 1：呼吸漸變背景 */
+        /* 背景：強化的四色律動漸變 */
         #bg-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
-            background-size: 400% 400%; animation: gradientBG 10s ease infinite;
+            background: linear-gradient(45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-4));
+            background-size: 300% 300%; 
+            animation: gradientBG 10s ease infinite; /* 縮短時間，增加變色感 */
             z-index: -1;
         }
 
-        /* 特效回歸 2：滑鼠互動背光 */
+        /* 探照燈特效 (電腦版) */
         #cursor-glow {
             position: fixed; top: 0; left: 0; width: 700px; height: 700px;
             background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 70%);
@@ -42,11 +46,15 @@
 
         .photo-card { position: absolute; width: var(--card-w); height: var(--card-w); opacity: 0; will-change: transform; cursor: pointer; }
         .photo-card.reveal { opacity: 1; transition: opacity 1.5s ease; }
-        .card-front-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: var(--card-radius); box-shadow: 0 10px 40px rgba(0,0,0,0.6); border: 0.5px solid rgba(255,255,255,0.1); filter: brightness(0.8); transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .card-front-thumb { 
+            width: 100%; height: 100%; object-fit: cover; border-radius: var(--card-radius); 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); border: 0.5px solid rgba(255,255,255,0.1); 
+            filter: brightness(0.85); transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); 
+        }
         .photo-card:hover .card-front-thumb { filter: brightness(1.1); transform: scale(1.06); border-color: rgba(255,255,255,0.4); }
 
-        /* 特效回歸 3：沈浸式啟動層與巨大按鈕 */
-        #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; display: flex; justify-content: center; align-items: center; transition: 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        /* 啟動層：維持巨型按鈕 */
+        #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; display: flex; justify-content: center; align-items: center; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); }
         #start-overlay.fade-out { opacity: 0; visibility: hidden; }
         #start-btn { 
             background: rgba(255,255,255,0.1); border: 2.5px solid rgba(255,255,255,0.7); 
@@ -54,15 +62,15 @@
             font-size: 1.6rem; letter-spacing: 6px; cursor: pointer; backdrop-filter: blur(20px);
             box-shadow: 0 0 40px rgba(255,255,255,0.15); transition: 0.4s;
         }
-        #start-btn:hover { background: #fff; color: #000; transform: scale(1.1); }
+        #start-btn:hover { background: #fff; color: #000; transform: scale(1.05); }
 
-        /* 特效回歸 4：大圖自適應優化 (解決切掉問題) */
+        /* 大圖自適應修正 */
         #baguetteBox-overlay .full-image img {
             max-width: 92vw !important; max-height: 82vh !important;
             width: auto !important; height: auto !important; object-fit: contain !important;
         }
 
-        /* 特效回歸 5：修正後的 3D 翻轉彩蛋 */
+        /* 3D 翻轉彩蛋 (隔離渲染版) */
         #secret-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); z-index: 10000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.5s; }
         #secret-overlay.open { opacity: 1; visibility: visible; }
         .secret-card-container { width: 88vw; max-width: 400px; aspect-ratio: 1/1; perspective: 1800px; }
@@ -77,7 +85,7 @@
         .header.reveal { opacity: 0.8; }
         .close-secret { position: absolute; top: 35px; right: 35px; color: white; font-size: 3.5rem; cursor: pointer; z-index: 10001; }
         #previous-button, #next-button { display: none !important; }
-        @keyframes gradientBG { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
     </style>
 </head>
 <body>
@@ -126,18 +134,18 @@
     const worldHeight = Math.ceil(totalPhotos / cols) * cellSize;
     const photos = [];
 
-    // --- 啟動儀式 ---
+    // 啟動監聽
     startBtn.onclick = function() {
         overlay.classList.add('fade-out');
         header.classList.add('reveal');
-        bgm.playbackRate = 0.85; // 特效：慢速 BGM
+        bgm.playbackRate = 0.85; 
         bgm.play().catch(() => {});
         photos.forEach((p, index) => {
             setTimeout(() => { p.element.classList.add('reveal'); }, index * 8);
         });
     };
 
-    // --- 宇宙生成 ---
+    // 宇宙照片生成
     for (let i = 1; i <= totalPhotos; i++) {
         const isSecret = (i === 16);
         const card = document.createElement(isSecret ? 'div' : 'a');
@@ -155,13 +163,13 @@
         if (isSecret) card.onclick = (e) => { e.stopPropagation(); secretOverlay.classList.add('open'); secretCard.classList.remove('flipped'); };
     }
 
-    // --- 探照燈追蹤 ---
+    // 滑鼠探照燈
     window.addEventListener('mousemove', (e) => {
         glow.style.left = e.clientX + 'px';
         glow.style.top = e.clientY + 'px';
     });
 
-    // --- 物理宇宙渲染 ---
+    // 渲染循環
     let viewX = 0, viewY = 0, velX = 0.2, velY = 0.1, isDragging = false, lastX, lastY;
     function render() {
         if (!isDragging) { viewX += velX; viewY += velY; velX *= 0.98; velY *= 0.98; }
@@ -176,13 +184,13 @@
     }
     render();
 
-    // --- 拖曳互動 ---
+    // 拖曳控制
     const startDrag = e => { if(e.target.tagName !== 'IMG') { isDragging = true; lastX = e.pageX || e.touches[0].pageX; lastY = e.pageY || e.touches[0].pageY; }};
     const moveDrag = e => { if(!isDragging) return; const x = e.pageX || e.touches[0].pageX, y = e.pageY || e.touches[0].pageY; const dx = x - lastX, dy = y - lastY; viewX += dx; viewY += dy; velX = dx; velY = dy; lastX = x; lastY = y; };
     window.addEventListener('mousedown', startDrag); window.addEventListener('mousemove', moveDrag); window.addEventListener('mouseup', () => isDragging = false);
     window.addEventListener('touchstart', startDrag, {passive: false}); window.addEventListener('touchmove', moveDrag, {passive: false}); window.addEventListener('touchend', () => isDragging = false);
     
-    // --- 彩蛋翻轉 ---
+    // 彩蛋控制
     let pressTimer;
     secretCard.ontouchstart = (e) => { e.preventDefault(); pressTimer = setTimeout(() => secretCard.classList.toggle('flipped'), 500); };
     secretCard.ontouchend = () => clearTimeout(pressTimer);
