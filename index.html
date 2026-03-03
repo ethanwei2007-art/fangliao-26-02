@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>屏東志工團：完整回憶錄</title>
+    <style>
+        /* 1. 背景變色特效 */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft JhengHei", sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #a1c4fd, #c2e9fb);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+
+        /* 2. 照片牆設計 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .item {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .item:hover {
+            transform: scale(1.05);
+        }
+
+        .item img, .item video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* 3. 滑鼠追蹤點 (畫布層) */
+        #canvas-mouse {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-mouse"></canvas>
+
+    <div class="container">
+        <h1>屏東教學回憶：完整版</h1>
+        
+        <div class="gallery">
+            <div class="item">
+                <img src="photo1.jpg" alt="活動照1">
+            </div>
+            <div class="item">
+                <video controls>
+                    <source src="video1.mp4" type="video/mp4">
+                    您的瀏覽器不支援影片播放。
+                </video>
+            </div>
+            </div>
+    </div>
+
+    <script>
+        /* 滑鼠動畫特效腳本 */
+        const canvas = document.getElementById('canvas-mouse');
+        const ctx = canvas.getContext('2d');
+        let dots = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        window.addEventListener('mousemove', (e) => {
+            for(let i = 0; i < 3; i++) {
+                dots.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    size: Math.random() * 5 + 2,
+                    speedX: (Math.random() - 0.5) * 2,
+                    speedY: (Math.random() - 0.5) * 2,
+                    life: 1
+                });
+            }
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for(let i = 0; i < dots.length; i++) {
+                let d = dots[i];
+                d.x += d.speedX;
+                d.y += d.speedY;
+                d.life -= 0.02;
+                ctx.fillStyle = `rgba(255, 255, 255, ${d.life})`;
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
+                ctx.fill();
+                if(d.life <= 0) {
+                    dots.splice(i, 1);
+                    i--;
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
